@@ -5,15 +5,12 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Three sample</title>
-  <style>
-
-  </style>
+  <title>Day 2 - Animations</title>
+  <style> </style>
 </head>
 
 <body>
   <canvas class="webgl"> </canvas>
-
   <script defer src="https://ga.jspm.io/npm:es-module-shims@1.6.2/dist/es-module-shims.js"></script>
 
 
@@ -25,17 +22,34 @@
         }
       }
     </script>
+
   <script type="module">
     import * as THREE from "three";
-    // console.log(THREE)
+    import gsap from 'gsap'
+
 
     const scene = new THREE.Scene();
 
-    //red cude 
-    const geometry = new THREE.BoxGeometry(1, 1, 1)
-    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
-    const mesh = new THREE.Mesh(geometry, material)
-    scene.add(mesh)
+    /**
+     * Objects
+     */
+
+    const group = new THREE.Group()
+    // group.position.y = 1
+    // group.scale.y = 2
+    // group.rotation.y = 1
+    scene.add(group)
+
+    const cube1 = new THREE.Mesh(
+      new THREE.BoxGeometry(1, 1, 1),
+      new THREE.MeshBasicMaterial({ color: 0xff0000 })
+
+    )
+    group.add(cube1)
+
+    // // Axes helper
+    const axisHelper = new THREE.AxesHelper()
+    scene.add(axisHelper)
 
     // Sizes
     const sizes = {
@@ -55,7 +69,29 @@
     })
 
     renderer.setSize(sizes.width, sizes.height)
-    renderer.render(scene, camera)
+
+
+    //clock
+    // const clock = new THREE.Clock()
+
+    gsap.to(group.position, {duration: 1, delay: 1, x:2})
+    gsap.to(group.position, {duration: 1, delay: 2, x:0})
+
+    // Animations
+    const tick = () => {
+      // // clock
+      // const elapsedTime = clock.getElapsedTime()
+      
+      // // Update objects
+      // group.rotation.y = Math.sin(elapsedTime)
+      // group.position.x = Math.cos(elapsedTime)
+
+      //Render 
+      renderer.render(scene, camera)
+      window.requestAnimationFrame(tick)
+    }
+
+    tick()
 
   </script>
 </body>

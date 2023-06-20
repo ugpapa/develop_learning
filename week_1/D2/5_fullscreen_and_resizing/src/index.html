@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 2 - Fullscreen and resizing</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body .webgl {
+      position: fixed;
+      top: 0;
+      left: 0;
+      outline: none;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas class="webgl"> </canvas>
+  <script defer src="https://ga.jspm.io/npm:es-module-shims@1.6.2/dist/es-module-shims.js"></script>
+
+
+  <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.147.0/build/three.module.js"
+
+        }
+      }
+    </script>
+
+  <script type="module">
+    import * as THREE from "three";
+
+    import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+
+    // Sizes
+    const sizes = {
+      width: window.innerWidth,
+      height: window.innerHeight
+    }
+
+    window.addEventListener('resize', () =>
+    {
+      //update sizes
+      sizes.width = window.innerHeight
+      sizes.height = window.innerWidth
+
+      //update camera
+      camera.aspect = sizes.width / sizes.height
+      camera.updateProjectionMatrix()
+
+      // uddate rederer
+      renderer.setSize(sizes.width, sizes.height)
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+    })
+
+    window.addEventListener('dblclick', () =>
+    {
+      const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement
+
+      if (!fullscreenElement)
+      {
+        if(canvas.requestFullscreen){
+          canvas.requestFullscreen()
+        }
+        else if (canvas.webkitFullscreen)
+        {
+          canvas.webkitFullscreen()
+        }
+
+      }
+      else
+      {
+        if(document.exitFullscreen)
+        {
+          document.exitFullscreen()
+        }
+        else if(document.webkitFullscreen)
+        {
+          document.webkitFullscreen()
+        }
+      }
+    })
+
+
+
+    /**
+     * Cursor
+     */
+    const cursor = {
+      x: 0,
+      y: 0
+    }
+
+    window.addEventListener('mousemove', (event) => {
+      cursor.x = event.clientX / sizes.width - 0.5
+      cursor.y = -(event.clientY / sizes.width - 0.5)
+      // console.log(cursor.x)
+    })
+
+    const scene = new THREE.Scene();
+
+    /**
+     * Objects
+     */
+
+    const mesh = new THREE.Mesh(
+      new THREE.BoxGeometry(1, 1, 1, 5, 5, 5),
+      new THREE.MeshBasicMaterial({ color: 0xff0000 })
+
+    )
+    scene.add(mesh)
+
+    // // Axes helper
+    const axisHelper = new THREE.AxesHelper()
+    scene.add(axisHelper)
+
+
+    // Camera position
+    const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+    // const camera = new THREE.OrthographicCamera(-1, 1, -1, 0.1, 100)
+    // camera.position.x = 2
+    // camera.position.y = 2
+    camera.position.z = 3
+    camera.lookAt(mesh.position)
+    scene.add(camera)
+
+
+
+    // Renderer
+    const canvas = document.querySelector('canvas.webgl')
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvas
+    })
+
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+    //Controls
+    const controls = new OrbitControls(camera, canvas)
+    controls.enableDamping = true
+
+
+    //clock
+    const clock = new THREE.Clock()
+
+    // Animations
+    const tick = () => {
+      // clock
+      const elapsedTime = clock.getElapsedTime()
+
+      // Update objects
+      // mesh.rotation.y= Math.sin(elapsedTime)
+      // mesh.position.x = Math.cos(elapsedTime)
+      // updae camera
+      // camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 3
+      // camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 3
+      // camera.position.y = cursor.y * 5
+      // camera.lookAt(mesh.position)
+
+      //update controls
+      controls.update()
+
+
+      //Render 
+      renderer.render(scene, camera)
+      window.requestAnimationFrame(tick)
+    }
+
+    tick()
+
+  </script>
+</body>
+
+</html>
