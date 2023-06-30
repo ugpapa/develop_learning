@@ -1,0 +1,19 @@
+
+# Three.js Journey
+
+## Setup
+Download [Node.js](https://nodejs.org/en/download/).
+Run this followed commands:
+
+``` bash
+# Install dependencies (only the first time)
+npm install
+npm install leva@0.9
+npm install r3f-perf@7.1
+
+# Run the local server at localhost:xxxx
+npm run dev
+
+# Build for production in the dist/ directory
+npm run build
+```
